@@ -28,7 +28,7 @@ namespace VSXMLParser {
 		static void Main(string[] args) {
 			Catch(() => { // catch any exceptions using a premade function
 #if DEBUG
-				args = new string[]{ "VSXMLParser.xml" };
+				args = new string[] { "VSXMLParser.xml" };
 #endif
 
 				if (!(args?.Length > 0 && File.Exists(args[0]))) throw new Exception("Please specify the path to a file as the first argument");

@@ -7,7 +7,7 @@ using System.Linq;
 namespace VSXMLParser {
 	/// <summary>An interface for parsers. Allows for easy creation of new parsers</summary>
 	public interface IParser {
-		
+
 		/// <summary>The list of documented items to parse</summary>
 		/// <param name="items">Each item you gotta parse</param>
 		/// <param name="streamWriter">The StreamWriter you can write everything to</param>
@@ -71,7 +71,7 @@ namespace VSXMLParser {
 						sw.WriteLine($"{paramName} | {summary}");
 						sw.WriteLine($"{new string('-', paramName.Length)} | {new string('-', summary.Length)}");
 
-						foreach(var j in i.Params) {
+						foreach (var j in i.Params) {
 							if (j?.Name == null) break;
 							if (j?.Summary == null) break;
 
@@ -95,8 +95,8 @@ namespace VSXMLParser {
 	internal static class MarkdownParserHelper {
 		public static List<DocumentedItem> FindThat(this DocumentedItem[] itms, string startsWith)
 			=> (from x in itms
-			   where x.Name?.StartsWith(startsWith) is true
-			   select x).ToList();
+				where x.Name?.StartsWith(startsWith) is true
+				select x).ToList();
 
 		public static string ReplaceAll(this string s, string replaceTo, params char[] validForReplacing) {
 			string res = s;

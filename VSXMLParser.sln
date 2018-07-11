@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSXMLParser", "VSXMLParser\VSXMLParser.csproj", "{6FBDC7BA-905A-4A8C-80BC-67B8E4DB644B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSXMLParser", "VSXMLParser\VSXMLParser.csproj", "{AA53917A-6CEC-434B-8C28-1B7ABA88C243}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6FBDC7BA-905A-4A8C-80BC-67B8E4DB644B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FBDC7BA-905A-4A8C-80BC-67B8E4DB644B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FBDC7BA-905A-4A8C-80BC-67B8E4DB644B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FBDC7BA-905A-4A8C-80BC-67B8E4DB644B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA53917A-6CEC-434B-8C28-1B7ABA88C243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA53917A-6CEC-434B-8C28-1B7ABA88C243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA53917A-6CEC-434B-8C28-1B7ABA88C243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA53917A-6CEC-434B-8C28-1B7ABA88C243}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {30864691-1895-4839-B5CB-EB3351710633}
+		SolutionGuid = {CBFBCA86-E31A-45A1-9136-D5CCB5D9A1B6}
 	EndGlobalSection
 EndGlobal
