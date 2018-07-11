@@ -19,22 +19,10 @@ namespace VSXMLParser {
 
 		/// <summary>Parse it all!</summary>
 		public void Parse(DocumentedItem[] items, StreamWriter sw) {
-			var classes = items.FindThat("T:");
-			var methods = items.FindThat("M:");
-			var properties = items.FindThat("P:");
-			var fields = items.FindThat("F:");
-
-			foreach (var i in items) i.Name = i.Name.Substring(2); // remove the beginng X:
-
-			classes = classes.OrderBy(x => x.Name).ToList();
-			methods = methods.OrderBy(x => x.Name).ToList();
-			properties = properties.OrderBy(x => x.Name).ToList();
-			fields = fields.OrderBy(x => x.Name).ToList();
-
-			WriteTOCGroup("Classes", classes, sw);
-			WriteTOCGroup("Methods", methods, sw);
-			WriteTOCGroup("Properties", properties, sw);
-			WriteTOCGroup("Fields", fields, sw);
+			var classes = GetItemsFor(items, "T:", "Classes", sw);
+			var methods = GetItemsFor(items, "M:", "Methods", sw);
+			var properties = GetItemsFor(items, "P:", "Properties", sw);
+			var fields = GetItemsFor(items, "F:", "Fields", sw);
 
 			WriteGroup("Classes", classes, sw);
 			WriteGroup("Methods", methods, sw);
@@ -42,14 +30,23 @@ namespace VSXMLParser {
 			WriteGroup("Fields", fields, sw);
 		}
 
+		public List<DocumentedItem> GetItemsFor(DocumentedItem[] items, string beginning, string tocName, StreamWriter sw) {
+			var itms = items.FindThat(beginning);
+			itms = itms.OrderBy(x => x.Name).ToList();
+			foreach (var i in itms) i.Name = i.Name.Substring(2); // remove the beginning X:
+			WriteTOCGroup(tocName, itms, sw);
+
+			return itms;
+		}
+
 		private static void WriteTOCGroup(string groupName, IEnumerable<DocumentedItem> items, StreamWriter sw) {
 			sw.WriteLine($"- [{groupName}](#{groupName.ToLower()})");
 			foreach (var i in items) {
 				var visibleName = i.Name?.Replace("`", "\\`") ?? "";
-				var hrefName = i.Name?.Replace(' ', '-')?.Replace("`", "\\`").Replace(".", "") ?? "";
+				var hrefName = i.Name?.Replace(' ', '-').Replace(".", "") ?? "";
 
 				if (visibleName != null && hrefName != null)
-					sw.WriteLine($"\t- [{visibleName.Replace("<", "&lt;").Replace(">", "&gt;")}](#{hrefName.Replace("<", "").Replace(">", "").Replace(".", "").Replace(",", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", "").Replace("(", "").Replace(")", "").ToLower()})");
+					sw.WriteLine($"\t- [{visibleName?.Replace("<", "&lt;").Replace(">", "&gt;")}](#{hrefName?.ReplaceAll("", '<', '>', '.', ',', '[', ']', '{', '}', '(', ')').ToLower()})");
 			}
 			sw.WriteLine("");
 			sw.WriteLine("---");
@@ -100,5 +97,12 @@ namespace VSXMLParser {
 			=> (from x in itms
 			   where x.Name?.StartsWith(startsWith) is true
 			   select x).ToList();
+
+		public static string ReplaceAll(this string s, string replaceTo, params char[] validForReplacing) {
+			string res = s;
+			foreach (var i in validForReplacing)
+				res = res.Replace(i.ToString(), replaceTo);
+			return res;
+		}
 	}
 }

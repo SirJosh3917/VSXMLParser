@@ -27,6 +27,10 @@ namespace VSXMLParser {
 		/// <param name="args">The string[] of arguments passed to it.</param>
 		static void Main(string[] args) {
 			Catch(() => { // catch any exceptions using a premade function
+#if DEBUG
+				args = new string[]{ "VSXMLParser.xml" };
+#endif
+
 				if (!(args?.Length > 0 && File.Exists(args[0]))) throw new Exception("Please specify the path to a file as the first argument");
 
 				var fileInput = args[0];
@@ -63,19 +67,25 @@ namespace VSXMLParser {
 		static DocumentedItem[] GetItems(IEnumerable<XElement> members) {
 			var docs = new List<DocumentedItem>();
 
-			foreach(var i in members)
+			foreach (var i in members) {
+				var prms = i.Elements("param")?.Select(x => new Param {
+					Name = x?.Attribute("name")?.Value,
+					Summary = x?.Value
+				})?.Concat(i.Elements("typeparam")?.Select(x => new Param {
+					Name = x?.Attribute("name")?.Value,
+					Summary = x?.Value
+				}))?.ToArray();
+
 				docs.Add(new DocumentedItem {
-					Name = DocumentedItem.ParseGenericsInName( i.Attribute("name")?.Value ),
+					Name = DocumentedItem.ParseName(i.Attribute("name")?.Value, prms),
 
 					Summary = i.Element("summary")?.Value,
 					Remarks = i.Element("remarks")?.Value,
 					Returns = i.Element("returns")?.Value,
 
-					Params = i.Elements("param")?.Select(x => new Param {
-						Name = x.Attribute("name")?.Value,
-						Summary = x?.Value
-					})?.ToArray()
+					Params = prms
 				});
+			}
 
 			return docs.ToArray();
 		}
@@ -100,8 +110,26 @@ namespace VSXMLParser {
 	public class DocumentedItem {
 		/// <summary>Parse backticks into actual readable generics</summary>
 		/// <param name="name">The name to parse</param>
+		/// <param name="prms">The list of parameters to use as input for the names</param>
 		/// <returns>A string with &gt;T&lt;s everywhere</returns>
-		public static string ParseGenericsInName(string name) {
+		public static string ParseName(string name, Param[] prms) {
+			if (prms.Length > 0) {
+				int prmOn = 0;
+				int searchAt = 0;
+				foreach (var i in prms) {
+					if ((searchAt = name.IndexOf(',', searchAt)) < 0) break;
+
+					name = name.ReplaceFirst(",", " " + (i?.Name ?? "") + ", ", searchAt);
+
+					searchAt += (i?.Name ?? "").Length + 3;
+
+					prmOn++;
+				}
+
+				if (prms.Length > prmOn)
+					name = name.Replace(")", " " + (prms[prmOn]?.Name ?? "") + ")");
+			} else name = name.ReplaceAll(", ", ',');
+
 			if (name == null || name.IndexOf('`') < 0) return name;
 
 			name = InternalDoFancyShmancyReplacing("``", "TParam", name);
@@ -160,8 +188,8 @@ namespace VSXMLParser {
 	}
 
 	internal static class Helper {
-		public static string ReplaceFirst(this string text, string search, string replace) {
-			int pos = text.IndexOf(search);
+		public static string ReplaceFirst(this string text, string search, string replace, int searchAt = 0) {
+			int pos = text.IndexOf(search, searchAt);
 			if (pos < 0) {
 				return text;
 			}
