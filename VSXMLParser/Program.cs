@@ -127,7 +127,7 @@ namespace VSXMLParser {
 					strbMain.Append(">");
 
 					name = name.ReplaceFirst($"{repl}{genericAmount}", strbMain.ToString());
-					for (int i = 0; i < genericAmount; i++) name = name.Replace($"{repl}{i}", $"<{t}{i}>");
+					for (int i = 0; i < genericAmount; i++) name = name.Replace($"{repl}{i}", $"<{t}{i + 1}>");
 				} else throw new Exception($"Unreasonable amount of generics - so many, in fact, there are more then the integer maximum value. Please literally kill the library creator.");
 			}
 
